@@ -1,2 +1,2 @@
-# jft
+# JFT
 Json File Formatter
