@@ -11,9 +11,6 @@ Check if Python 3 is already installed:
 python3 --version
 
 ```
-You will see an output similar to this if already installed
-```bash
-Python 3.x.x
-```
+You will see an output similar to this if already installed: ```Python 3.x.x```
 
 
