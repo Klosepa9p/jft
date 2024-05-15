@@ -2,6 +2,7 @@ import argparse
 import os
 import json
 import shutil
+import re
 
 class ConfigManager:
     def __init__(self, config_file="config.json"):
@@ -44,6 +45,7 @@ class ConfigManager:
             print(f"Error creating backup for file '{file_name}': {e}")
             return None
 
+
     def rename_json_files(self, new_name):
         work_folder = self.get("work_folder", "")
         if not work_folder:
@@ -53,15 +55,20 @@ class ConfigManager:
         files = os.listdir(work_folder)
         json_files = [file for file in files if file.endswith('.json')]
         
-        json_files_sorted = sorted(json_files, key=lambda x: int(x.split('(')[1].split(')')[0]) if '(' in x and ')' in x else 0)
+        # Dosyaları numaralarına göre sırala
+        json_files_sorted = sorted(json_files, key=lambda x: int(re.search(r'\d+', x).group()) if re.search(r'\d+', x) else 0)
 
         file_map = {}
         for i, file_name in enumerate(json_files_sorted, start=1):
-            _, file_extension = os.path.splitext(file_name)
-            new_file_name = f"{new_name}{i}{file_extension}"
+            if file_name.startswith("pepe-paint-history"):
+                file_name_parts = file_name.split(".")
+                file_name_parts[0] = f"{new_name}{i}"
+                new_file_name = ".".join(file_name_parts)
+            else:
+                new_file_name = f"{new_name}{i}.json"
             file_map[file_name] = new_file_name
-        
-        for file_name in json_files:
+
+        for file_name in json_files_sorted:
             old_file_path = os.path.join(work_folder, file_name)
             new_file_name = file_map[file_name]
             new_file_path = os.path.join(work_folder, new_file_name)
@@ -70,6 +77,7 @@ class ConfigManager:
 
         self.config['new_name'] = new_name
         self.save_config()
+
 
     def specify_work_file(self, first_file):
         work_folder = self.get("work_folder", "")
