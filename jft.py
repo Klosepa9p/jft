@@ -49,13 +49,11 @@ class ConfigManager:
         if not work_folder:
             print("Error: Working folder is not specified.")
             return
-        
+
         files = os.listdir(work_folder)
         json_files = [file for file in files if file.endswith('.json')]
-        json_files_sorted = sorted(json_files)
         
-        if json_files_sorted[-1] == "pepe-paint-history.json":
-            json_files_sorted.insert(0, json_files_sorted.pop(-1))
+        json_files_sorted = sorted(json_files, key=lambda x: int(x.split('(')[1].split(')')[0]) if '(' in x and ')' in x else 0)
 
         file_map = {}
         for i, file_name in enumerate(json_files_sorted, start=1):
@@ -69,7 +67,8 @@ class ConfigManager:
             new_file_path = os.path.join(work_folder, new_file_name)
             os.rename(old_file_path, new_file_path)
             print(f"{file_name} -> {new_file_name}")
-        
+
+        self.config['new_name'] = new_name
         self.save_config()
 
     def specify_work_file(self, first_file):
