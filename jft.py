@@ -55,7 +55,6 @@ class ConfigManager:
         files = os.listdir(work_folder)
         json_files = [file for file in files if file.endswith('.json')]
         
-        # Dosyaları numaralarına göre sırala
         json_files_sorted = sorted(json_files, key=lambda x: int(re.search(r'\d+', x).group()) if re.search(r'\d+', x) else 0)
 
         file_map = {}
